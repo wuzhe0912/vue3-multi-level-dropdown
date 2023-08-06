@@ -22,11 +22,24 @@ const expandItemAndAncestors = (items: MenuItemType[], id: string): boolean => {
   }
   return false;
 };
+
+const handleClearLocalStorage = () => {
+  localStorage.clear();
+  window.location.reload();
+};
 </script>
 
 <template>
   <main>
     <DropdownMenu :menuItems="menuItems" />
-    <DropdownSelector :menuItems="menuItems" @selectItem="handleSelectItem" />
+    <div class="flex">
+      <DropdownSelector :menuItems="menuItems" @selectItem="handleSelectItem" />
+      <button
+        @click="handleClearLocalStorage"
+        class="mt-4 ml-2 bg-blue-400 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+      >
+        Clear Local Storage
+      </button>
+    </div>
   </main>
 </template>

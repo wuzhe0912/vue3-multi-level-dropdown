@@ -10,6 +10,7 @@ const props = defineProps<{
 const emit = defineEmits(['selectItem']);
 const { storage } = useLocalStorage('selectedItem', '');
 const flattenedItems = ref<MenuItemType[]>([]);
+const selectedItem = ref<string>('');
 
 const flattenItems = (items: MenuItemType[], prefix: string = '') => {
   items.forEach((item) => {
@@ -24,14 +25,13 @@ const flattenItems = (items: MenuItemType[], prefix: string = '') => {
   });
 };
 
-const selectItem = (event: Event) => {
-  const selectElement = event.target as HTMLSelectElement;
-  const selectedItem = flattenedItems.value.find(
-    (item) => item.id === selectElement.value
+const selectItem = (itemID: string) => {
+  const selectedItemValue = flattenedItems.value.find(
+    (item) => item.id === itemID
   );
-  if (selectedItem) {
-    emit('selectItem', selectedItem);
-    storage.value = selectElement.value;
+  if (selectedItemValue) {
+    emit('selectItem', selectedItemValue);
+    storage.value = itemID;
   }
 };
 
@@ -41,20 +41,24 @@ onMounted(() => {
   const lastSelectedItemId = storage.value;
 
   if (lastSelectedItemId) {
+    selectedItem.value = lastSelectedItemId;
     const lastSelectedItem = flattenedItems.value.find(
       (item) => item.id === lastSelectedItemId
     );
     if (lastSelectedItem) {
       emit('selectItem', lastSelectedItem);
     }
+  } else if (flattenedItems.value.length > 0) {
+    selectedItem.value = flattenedItems.value[0].id;
   }
 });
 </script>
 
 <template>
   <select
+    v-model="selectedItem"
     class="mt-4 ml-2 w-72 h-10 px-3 py-2 border border-gray-300 rounded-md bg-white text-base focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent shadow-md"
-    @change="selectItem"
+    @change="selectItem(selectedItem)"
   >
     <option v-for="item in flattenedItems" :key="item.id" :value="item.id">
       {{ item.name }}
