@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { MenuItem } from './mock/data';
-import { MenuItemType } from './interface/menu';
-import DropdownMenu from './components/DropdownMenu.vue';
-import DropdownSelector from './components/DropdownSelector.vue';
+import { ref } from 'vue';
+import { MenuItem } from '@/mock/data';
+import { MenuItemType } from '@/interface/menu';
+import DropdownMenu from '@/components/DropdownMenu.vue';
+import DropdownSelector from '@/components/DropdownSelector.vue';
 
 const menuItems = ref(MenuItem);
 

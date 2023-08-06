@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref, watch, onMounted } from 'vue';
-import { MenuItemType } from '../interface/menu';
+import { ref, watch } from 'vue';
+import { MenuItemType } from '@/interface/menu';
 import DropdownMenu from './DropdownMenu.vue';
-import RightArrow from '../assets/right-arrow.svg';
-import DownArrow from '../assets/down-arrow.svg';
-import { useLocalStorage } from '../composables/useLocalStorage';
+import RightArrow from '@/assets/right-arrow.svg';
+import DownArrow from '@/assets/down-arrow.svg';
+import { useLocalStorage } from '@/composables/useLocalStorage';
 
 const props = defineProps<{
   menuItems: MenuItemType[];

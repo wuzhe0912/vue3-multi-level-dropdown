@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { MenuItemType } from '../interface/menu';
-import { useLocalStorage } from '../composables/useLocalStorage';
+import { MenuItemType } from '@/interface/menu';
+import { useLocalStorage } from '@/composables/useLocalStorage';
 
 const props = defineProps<{
   menuItems: MenuItemType[];
