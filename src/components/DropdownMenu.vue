@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { MenuItemType } from '../interface/menu';
 import DropdownMenu from './DropdownMenu.vue';
+import RightArrow from '../assets/right-arrow.svg';
+import DownArrow from '../assets/down-arrow.svg';
 
 const props = defineProps<{
   menuItems: MenuItemType[];
@@ -32,6 +34,23 @@ const collapseChildren = (item: MenuItemType) => {
     }
   });
 };
+
+watch(
+  () => props.menuItems,
+  () => {
+    props.menuItems.forEach((i) => {
+      if (i.expanded && i.id !== expandedItem.value) {
+        i.expanded = false;
+        if (i.children) {
+          collapseChildren(i);
+        }
+      }
+    });
+  },
+  {
+    immediate: true,
+  }
+);
 </script>
 
 <template>
@@ -42,6 +61,20 @@ const collapseChildren = (item: MenuItemType) => {
       @click.stop="toggle(item)"
       class="cursor-pointer min-w-full"
     >
+      <template v-if="item.children">
+        <img
+          v-if="!item.expanded"
+          :src="RightArrow"
+          alt="Right arrow"
+          class="inline-block h-4 w-4 mr-2"
+        />
+        <img
+          v-else
+          :src="DownArrow"
+          alt="Down arrow"
+          class="inline-block h-4 w-4 mr-2"
+        />
+      </template>
       <span>{{ item.name }}</span>
       <transition
         enter-active-class="transition-all duration-300"

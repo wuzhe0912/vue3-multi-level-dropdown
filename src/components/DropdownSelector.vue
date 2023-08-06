@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { MenuItemType } from '../interface/menu';
+import { useLocalStorage } from '../composables/useLocalStorage';
 
 const props = defineProps<{
   menuItems: MenuItemType[];
 }>();
 
 const emit = defineEmits(['selectItem']);
-
+const { storage } = useLocalStorage('selectedItem', '');
 const flattenedItems = ref<MenuItemType[]>([]);
 
 const flattenItems = (items: MenuItemType[], prefix: string = '') => {
@@ -25,11 +26,28 @@ const flattenItems = (items: MenuItemType[], prefix: string = '') => {
 
 const selectItem = (event: Event) => {
   const selectElement = event.target as HTMLSelectElement;
-  emit('selectItem', selectElement.value);
+  const selectedItem = flattenedItems.value.find(
+    (item) => item.id === selectElement.value
+  );
+  if (selectedItem) {
+    emit('selectItem', selectedItem);
+    storage.value = selectElement.value;
+  }
 };
 
 onMounted(() => {
   flattenItems(props.menuItems);
+
+  const lastSelectedItemId = storage.value;
+
+  if (lastSelectedItemId) {
+    const lastSelectedItem = flattenedItems.value.find(
+      (item) => item.id === lastSelectedItemId
+    );
+    if (lastSelectedItem) {
+      emit('selectItem', lastSelectedItem);
+    }
+  }
 });
 </script>
 

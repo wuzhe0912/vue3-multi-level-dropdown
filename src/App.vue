@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { MenuItem } from './mock/data';
 import { MenuItemType } from './interface/menu';
 import DropdownMenu from './components/DropdownMenu.vue';
@@ -7,8 +7,8 @@ import DropdownSelector from './components/DropdownSelector.vue';
 
 const menuItems = ref(MenuItem);
 
-const handleSelectItem = (selectedId: string) => {
-  expandItemAndAncestors(menuItems.value, selectedId);
+const handleSelectItem = (selectedItem: MenuItemType) => {
+  expandItemAndAncestors(menuItems.value, selectedItem.id);
 };
 
 const expandItemAndAncestors = (items: MenuItemType[], id: string): boolean => {
