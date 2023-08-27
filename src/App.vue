@@ -7,10 +7,12 @@ import DropdownSelector from '@/components/DropdownSelector.vue';
 
 const menuItems = ref(MenuItem);
 
+// 當選擇項目時，展開選擇的項目和其所有父項目
 const handleSelectItem = (selectedItem: MenuItemType) => {
   expandItemAndAncestors(menuItems.value, selectedItem.id);
 };
 
+// 使用遞迴函數來展開選定的項目 ID 和其所有父項目
 const expandItemAndAncestors = (items: MenuItemType[], id: string): boolean => {
   for (const item of items) {
     if (item.id === id || expandItemAndAncestors(item.children || [], id)) {

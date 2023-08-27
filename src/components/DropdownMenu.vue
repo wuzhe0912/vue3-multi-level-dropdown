@@ -9,11 +9,16 @@ import { useLocalStorage } from '@/composables/useLocalStorage';
 const props = defineProps<{
   menuItems: MenuItemType[];
 }>();
+// 使用自定義 hook 從 localStorage 中取得之前選擇的項目
 const { storage } = useLocalStorage('selectedItem', '');
 const expandedItem = ref<string | null>(storage.value || null);
+// const itemsMap = ref(new Map<string, MenuItemType>());
 
+// 使用遞迴函數來展開選定的項目和其所有父項目
 const expandItemAndAncestors = (items: MenuItemType[], id: string): boolean => {
+  // 這邊使用 for...of 而不是 forEach，是因為 for...of 可以使用 return 中斷迴圈
   for (const item of items) {
+    // 如果當前項目 ID 與指定 ID 相匹配，或者其子項目中有匹配的項目，則將其展開
     if (item.id === id || expandItemAndAncestors(item.children || [], id)) {
       item.expanded = true;
       return true;
@@ -24,22 +29,37 @@ const expandItemAndAncestors = (items: MenuItemType[], id: string): boolean => {
   return false;
 };
 
+// 使用 Map 來儲存所有項目，以便於在點擊項目時能夠快速找到對應的項目
+// const populateItemsMap = (items: MenuItemType[]) => {
+//   for (const item of items) {
+//     itemsMap.value.set(item.id, item);
+//     if (item.children) {
+//       populateItemsMap(item.children);
+//     }
+//   }
+// }
+
+// const item = itemsMap.value.get(itemID);
+
+// 處理點擊項目時的邏輯
 const toggle = (item: MenuItemType) => {
   props.menuItems.forEach((i) => {
+    // 如果項目ID與點擊的項目ID匹配，則切換其展開狀態
     if (i.id === item.id) {
       i.expanded = !i.expanded;
       expandedItem.value = i.expanded ? i.id : null;
-      storage.value = expandedItem.value;
+      storage.value = expandedItem.value; // 儲存到localStorage
     } else {
-      i.expanded = false;
+      i.expanded = false; // 其他項目則設定為收縮狀態
     }
 
     if (i.children && !i.expanded) {
-      collapseChildren(i);
+      collapseChildren(i); // 如果項目有子項目，且為收縮狀態，則收縮所有子項目
     }
   });
 };
 
+// 遞迴函數用於收縮所有子項目
 const collapseChildren = (item: MenuItemType) => {
   item.children?.forEach((child) => {
     child.expanded = false;
@@ -49,6 +69,7 @@ const collapseChildren = (item: MenuItemType) => {
   });
 };
 
+// 監視 menuItems 的變化，並調整項目的展開狀態
 watch(
   () => props.menuItems,
   () => {
